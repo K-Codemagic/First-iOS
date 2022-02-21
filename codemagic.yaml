@@ -5,8 +5,8 @@ workflows:
       groups:
         - appstore_credentials
       vars:
-        XCODE_WORKSPACE: "YOUR_WORKSPACE_NAME.xcworkspace"  # PUT YOUR WORKSPACE NAME HERE
-        XCODE_SCHEME: "YOUR_SCHEME_NAME" # PUT THE NAME OF YOUR SCHEME HERE
+        XCODE_WORKSPACE: "My First iOS App.xcodeproj"  # PUT YOUR WORKSPACE NAME HERE
+        XCODE_SCHEME: "My First iOS App" # PUT THE NAME OF YOUR SCHEME HERE
       xcode: latest
       cocoapods: default
     scripts:
@@ -24,7 +24,7 @@ workflows:
       - name: Set up code signing settings on Xcode project
         script: xcode-project use-profiles
       - name: Build ipa for distribution
-        script: xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
+        script: xcode-project build-ipa --project "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
