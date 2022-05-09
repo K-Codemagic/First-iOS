@@ -25,18 +25,6 @@ workflows:
         script: xcode-project use-profiles
       - name: Build ipa for distribution
         script: xcode-project build-ipa --project "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME" 
-      - name: Sonar
-        script: |
-            # download and install the SonarScanner
-            wget -O $FCI_BUILD_DIR/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-macosx.zip
-            unzip $FCI_BUILD_DIR/sonar-scanner.zip
-            mv sonar-scanner-* sonar-scanner
-      - name: Generate and upload code analysis report
-        script: |
-            export PATH=$PATH:$FCI_BUILD_DIR/sonar-scanner/bin
-            sonar-scanner \
-            -Dsonar.projectKey=First-iOS \
-            -Dsonar.host.url=https://1a51-2405-201-200f-7d67-d0ba-3977-760c-c168.ngrok.io \
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
