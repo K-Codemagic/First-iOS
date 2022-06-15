@@ -25,6 +25,27 @@ workflows:
         script: xcode-project use-profiles
       - name: Build ipa for distribution
         script: xcode-project build-ipa --project "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME" 
+      - name: Release notes
+        script: |
+            CURRENT_BRANCH=$(git branch --show-current )
+            TITLE="This build is from the \`${CURRENT_BRANCH}\` branch.\n"
+            echo $CURRENT_BRANCH
+            COMMITS="$(git log master -25 --format=format:" • %s")"
+
+            FORMATTEDCOMMITS=""
+            while read line; do FORMATTEDCOMMITS=$FORMATTEDCOMMITS$line"\n"; done <<< "$COMMITS"
+
+            MASTERCOMMITS="\nList of the last 25 commits in the master branch:\n$FORMATTEDCOMMITS"
+
+            CONTENT=${TITLE}${MASTERCOMMITS}
+            HEADER="[{\"language\":\"en-US\",\"text\":\""
+            FOOTER="\"}]"
+
+            RELEASENOTES="${HEADER}${CONTENT}${FOOTER}"
+
+            echo $RELEASENOTES
+            chmod +x release_notes.json
+            cat <<< "$RELEASENOTES" > $CM_BUILD_DIR/release_notes.json
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
